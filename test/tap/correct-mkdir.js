@@ -4,7 +4,6 @@ var path = require('path')
 var requireInject = require('require-inject')
 var cache_dir = path.resolve(__dirname, 'correct-mkdir')
 
-
 test('correct-mkdir: no race conditions', function (t) {
   var mock_fs = {}
   var did_hook = false
@@ -35,18 +34,18 @@ test('correct-mkdir: no race conditions', function (t) {
   }
   var mocks = {
     'graceful-fs': mock_fs,
-    'chownr': mock_chownr,
+    'chownr': mock_chownr
   }
   var correctMkdir = requireInject('../../lib/utils/correct-mkdir.js', mocks)
 
   var calls_in_progress = 3
-  function handleCallFinish() {
+  function handleCallFinish () {
     t.equal(chown_in_progress, 0, 'should not return while chown still in progress')
     if (!--calls_in_progress) {
       t.end()
     }
   }
-  function doHook() {
+  function doHook () {
     // This is fired during the first correctMkdir call, after the stat has finished
     // but before the chownr has finished
     // Buggy old code will fail and return a cached value before initial call is done
